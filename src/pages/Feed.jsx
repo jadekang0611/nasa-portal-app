@@ -5,10 +5,9 @@ import React from 'react';
 import Layout from '../components/shared/Layout';
 import SearchForm from '../components/search/SearchForm';
 import FeedPost from '../components/feed/FeedPost';
-import { Grid } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import API from '../api';
-import { useEffect } from 'react';
-import LoadingScreen from '../components/shared/LoadingScreen';
+import { LoadingLargeIcon } from '../icons';
 
 /* Fetch the latest photos as soon as a user visits the main Feed page */
 
@@ -60,7 +59,7 @@ const FeedPage = () => {
     setLoading(false);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const option = {
       root: null,
       rootMargin: '20px',
@@ -70,7 +69,7 @@ const FeedPage = () => {
     if (loader.current) observer.observe(loader.current);
   }, [handleObserver]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchMarsPhotos();
   }, [page]);
 
@@ -91,8 +90,16 @@ const FeedPage = () => {
       <SearchForm handleResults={handleResults} page={page} />
       <section>
         <main>
-          <FeedPhotoSection photos={photos} />
-          {loading && <LoadingScreen />}
+          {photos.length === 0 ? (
+            <>
+              <Typography component='h3' variant='h6'>
+                Your search did not return any results.
+              </Typography>
+            </>
+          ) : (
+            <FeedPhotoSection photos={photos} />
+          )}
+          {loading && <LoadingLargeIcon />}
           <div ref={loader} />
         </main>
       </section>
