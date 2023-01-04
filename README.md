@@ -74,4 +74,3 @@
 [react-url]: https://reactjs.org/
 [material-ui]: https://img.shields.io/badge/Material%20UI-007FFF?style=for-the-badge&logo=mui&logoColor=white
 [material-ui-url]: https://mui.com/material-ui/getting-started/overview/
-# nasa-portal-app
