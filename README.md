@@ -1,70 +1,77 @@
-# Getting Started with Create React App
+# NASA PORTAL
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### January 2, 2023
 
-## Available Scripts
+## Purpose of The Development
 
-In the project directory, you can run:
+- Upon passing the React frontend pre-screening test on December 21, 2022, I was asked to build a React application using [NASA API](https://api.nasa.gov/) for Reside.
 
-### `npm start`
+## Requirements
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Apply a good UX design using React
+- Fetch photos from the NASA API ('Mars Rover' endpoint)
+- Limit number of photos being fetched at 25 per page by applying pagination or dynamic loading
+- Build the filter OR search rover photos features:
+  ## Filter Type
+        • By camera name
+        • By 'Earth Day' date (2020-09-22)
+        • By 'Sol' date (2890)
+- Add any warning or error messages
+  - Possibly by adding messages for "No Results", "API fetch failed", etc
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## User Experience
 
-### `npm test`
+• A user will be welcomed with SignUp / LogIn with Google
+• Once signed in a user will be directed to the main photo feed page
+• A user can filter or search by (a) camera name, (b) 'Earth Day' date, or (c) By 'Sol' date.s
+• A signed-in user will be able to save their favorite photos which can be viewed in their profile page (lowest priority at the moment. Build this feature if time allowed).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Structure of NASA PORTAL
 
-### `npm run build`
+### Routes
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+• / (Main Feed page where a user can see every photos)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+[Components]:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- FeedPost
+- FeedPostSkeleton (For UI/UX purpose for slow loading)
 
-### `npm run eject`
+<!-- If time allowed -->
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+• /pins/:username
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+[Components]:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Pins (A user can pin a.k.a save their favourite NASA photos and view in this page)
+- Pin
+- Pin Skeleton
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+• /accounts/emailsignup (signup page)
+• /accounts/login (login page)
 
-## Learn More
+<!-- If time allowed -->
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+• \* (not found page)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Shared Components
 
-### Code Splitting
+- Navbar
+- PinCard
+- LoadingScreen
+- Layout
+- SEO
+- Search
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Built With
 
-### Analyzing the Bundle Size
+- [![React][react.js]][react-url]
+- [![Material-UI][material-ui]][material-ui-url]
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+<!-- MARKDOWN LINKS & IMAGES -->
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[react.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[react-url]: https://reactjs.org/
+[material-ui]: https://img.shields.io/badge/Material%20UI-007FFF?style=for-the-badge&logo=mui&logoColor=white
+[material-ui-url]: https://mui.com/material-ui/getting-started/overview/
+# nasa-portal-app
