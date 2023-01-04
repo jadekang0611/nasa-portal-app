@@ -6,32 +6,94 @@ import Layout from '../components/shared/Layout';
 import SearchForm from '../components/search/SearchForm';
 import FeedPost from '../components/feed/FeedPost';
 import { Grid } from '@material-ui/core';
-import { defaultPost } from '../data';
 import API from '../api';
+import { useEffect } from 'react';
+import LoadingScreen from '../components/shared/LoadingScreen';
 
 /* Fetch the latest photos as soon as a user visits the main Feed page */
 
 const FeedPage = () => {
   const [photos, setPhotos] = React.useState([]);
-  React.useEffect(() => {
-    (async () => {
-      try {
-        const res = await API.get(
-          `curiosity/latest_photos?api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`
-        );
-        console.log(res.data);
-        setPhotos(res.data.latest_photos);
-      } catch (e) {
-        console.log(e);
-      }
-    })();
+  const [page, setPage] = React.useState(1);
+  const [loading, setLoading] = React.useState(true);
+  const loader = React.useRef(null);
+  const [filtered, setFiltered] = React.useState(false);
+  const [filters, setFilters] = React.useState({
+    rovers: '',
+    sol: '',
+    datetype: '',
+    cameras: '',
+    date: '',
+  });
+
+  const handleObserver = React.useCallback((entries) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
+    }
   }, []);
+
+  const fetchMarsPhotos = async () => {
+    setLoading(true);
+    let res;
+    let entireData;
+    if (filtered) {
+      if (filters.cameras === 'all') {
+        res = await API.get(
+          `${filters.rovers}/photos?${filters.datetype}=${filters.date}&page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`
+        );
+        entireData = new Set([...photos, ...res.data.photos]);
+      } else {
+        res = await API.get(
+          `${filters.rovers}/photos?${filters.datetype}=${filters.date}&camera=${filters.cameras}&page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`
+        );
+        entireData = new Set([...photos, ...res.data.photos]);
+      }
+    } else {
+      res = await API.get(
+        `curiosity/latest_photos?page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`
+      );
+      entireData = new Set([...photos, ...res.data.latest_photos]);
+    }
+
+    setPhotos([...entireData]);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    const option = {
+      root: null,
+      rootMargin: '20px',
+      threshold: 0,
+    };
+    const observer = new IntersectionObserver(handleObserver, option);
+    if (loader.current) observer.observe(loader.current);
+  }, [handleObserver]);
+
+  useEffect(() => {
+    fetchMarsPhotos();
+  }, [page]);
+
+  function handleResults(data, rovers, datetype, date, cameras, filtered) {
+    console.log(data);
+    setPhotos(data);
+    setFilters({
+      rovers,
+      datetype,
+      cameras,
+      date,
+    });
+    setFiltered(filtered);
+  }
+
   return (
     <Layout title='Feed'>
-      <SearchForm />
+      <SearchForm handleResults={handleResults} page={page} />
       <section>
         <main>
           <FeedPhotoSection photos={photos} />
+          {loading && <LoadingScreen />}
+          <div ref={loader} />
         </main>
       </section>
     </Layout>

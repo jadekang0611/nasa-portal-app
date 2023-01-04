@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import {
   InputLabel,
@@ -61,27 +61,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SearchResultForm(props) {
+export default function SearchResultForm({ handleResults, page }) {
   const classes = useStyles();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = React.useState(false);
 
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = React.useState({
     rovers: 'curiosity',
     sol: '',
     datetype: 'earth',
     cameras: 'all',
     date: DateTime.now().toFormat('yyyy-MM-dd'),
   });
-  const [dates, setDates] = useState({
+  const [dates, setDates] = React.useState({
     startDate: '',
   });
 
-  const [earthDateVisible, setEarthDateVisible] = useState(true);
-  const [solDateVisible, setSolDateVisible] = useState(false);
-  const [dateType, setDateType] = useState('earth_date');
+  const [earthDateVisible, setEarthDateVisible] = React.useState(true);
+  const [solDateVisible, setSolDateVisible] = React.useState(false);
+  const [dateType, setDateType] = React.useState('earth_date');
+  //const [page, setPage] = React.useState(1);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (filters.datetype === 'earth') {
       setEarthDateVisible(true);
       setDateType('earth_date');
@@ -123,7 +124,6 @@ export default function SearchResultForm(props) {
     });
   };
 
-  // TODO
   const handleDate = (name, date) => {
     console.log(name);
     console.log(date);
@@ -135,7 +135,60 @@ export default function SearchResultForm(props) {
     });
   };
 
-  const handleSubmit = (e) => {};
+  const fetchMarsPhotos = async () => {
+    // setLoading(true);
+    // let res = await API.get(
+    //   `curiosity/latest_photos?page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`
+    // );
+    // let entireData = new Set([...photos, ...res.data.latest_photos]);
+    // setPhotos([...entireData]);
+    // setLoading(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    (async () => {
+      try {
+        setLoading(true);
+
+        //build query string
+        let chosen_date = '';
+        if (filters.datetype === 'earth') {
+          chosen_date = filters.date;
+        } else if (filters.datetype === 'sol') {
+          chosen_date = filters.sol;
+        }
+
+        console.log(`chosen date: ${chosen_date}`);
+        console.log(filters.cameras);
+        let query;
+        if (filters.cameras === 'all') {
+          query = `${filters.rovers}/photos?${dateType}=${chosen_date}&page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`;
+        } else {
+          query = `${filters.rovers}/photos?${dateType}=${chosen_date}&camera=${filters.cameras}&page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`;
+        }
+
+        console.log(query);
+
+        let res = await API.get(query);
+        setLoading(false);
+        console.log(res.data.photos);
+        handleResults(
+          res.data.photos,
+          filters.rovers,
+          dateType,
+          chosen_date,
+          filters.cameras,
+          true
+        );
+      } catch (e) {
+        setLoading(false);
+        console.log(e);
+      }
+    })();
+  };
+
+  // if (page <= ACTUAL_PAGES) call the api
 
   return (
     <form className={classes.form} onSubmit={handleSubmit} noValidate>
@@ -201,6 +254,7 @@ export default function SearchResultForm(props) {
             labelId='cameras'
             id='cameras'
             name='cameras'
+            value={filters.cameras ? filters.cameras : ''}
             label='Cameras'
             onChange={handleChange}
           >
