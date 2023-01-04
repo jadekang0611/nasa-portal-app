@@ -70,3 +70,96 @@ export const useLayoutStyles = makeStyles(() => ({
     width: '100%',
   },
 }));
+
+export const useSearchFormStyle = makeStyles((theme) => ({
+  sectionItem: {
+    display: 'grid',
+    gridAutoFlow: 'column',
+    gridGap: 30,
+    placeItems: 'start end',
+    marginBottom: 16,
+    gridTemplateColumns: 'minmax(auto, 150px) minmax(auto, 340px)',
+  },
+  justifySelfStart: {
+    justifySelf: 'start',
+  },
+  form: {
+    display: 'grid',
+  },
+  paper: {
+    marginTop: theme.spacing(6),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%',
+    marginTop: theme.spacing(3),
+  },
+  search: {
+    //margin: theme.spacing(3, 0, 2),
+    backgroundColor: '#E50914',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: '#f40612',
+    },
+    maxWidth: '200px',
+  },
+  results: {
+    marginTop: theme.spacing(6),
+  },
+  centered: {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    /* bring your own prefixes */
+    transform: 'translate(-50%, -50%)',
+  },
+}));
+
+export const useSearchStyle = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(6),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%',
+    marginTop: theme.spacing(3),
+  },
+  search: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  results: {
+    marginTop: theme.spacing(6),
+  },
+}));
+
+const sectionItem = {
+  display: 'grid',
+  gridAutoFlow: 'column',
+  gridGap: 30,
+  placeItems: 'start end',
+  marginBottom: 16,
+  gridTemplateColumns: 'minmax(auto, 150px) minmax(auto, 340px)',
+};
+const typography = {
+  fontWeight: '600 !important',
+};
+const justifySelfStart = {
+  justifySelf: 'start',
+};
+const form = {
+  display: 'grid',
+};
+
+export const useFeedStyle = makeStyles((theme) => ({}));
