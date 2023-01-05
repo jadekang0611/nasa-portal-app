@@ -1,35 +1,29 @@
 import { AppBar } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { useNavbarStyle } from '../../styles';
-
-
+import { useNavbarStyles } from '../../styles';
 
 const Navbar = () => {
-    const classes = useNavbarStyle()
-    return (
-        <>
-        <AppBar className={classes.appBar}>
-            <section className={classes.section}>
-                <Logo/>
-            </section>
-        </AppBar>
-        </>
-    )
-}
+  const classes = useNavbarStyles();
+  return (
+    <>
+      <AppBar className={classes.appBar}>
+        <section className={classes.section}>
+          <Logo />
+        </section>
+      </AppBar>
+    </>
+  );
+};
 
 const Logo = () => {
-const classes = useNavbarStyle()
+  const classes = useNavbarStyles();
   return (
-    <div className={classes.logoContainer} >
+    <div className={classes.logoContainer}>
       <Link to='/' className={classes.link}>
-        <div className={classes.logoWrapper}>
-        NASA Portal
-        </div>
+        <div className={classes.logoWrapper}>NASA Portal</div>
       </Link>
     </div>
   );
-}
+};
 
-
-
-export default Navbar
+export default Navbar;

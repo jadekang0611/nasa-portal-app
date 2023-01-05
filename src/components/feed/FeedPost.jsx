@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFeedPostStyle } from '../../styles';
+import { useFeedPostStyles } from '../../styles';
 import {
   Card,
   CardContent,
@@ -7,8 +7,8 @@ import {
   CardMedia,
 } from '@material-ui/core';
 
-export default function FeedPost({ media, height }) {
-  const classes = useFeedPostStyle();
+const FeedPost = ({ media, height }) => {
+  const classes = useFeedPostStyles();
   return (
     <Card className={classes.root}>
       <CardActionArea>
@@ -17,4 +17,6 @@ export default function FeedPost({ media, height }) {
       <CardContent />
     </Card>
   );
-}
+};
+
+export default FeedPost;

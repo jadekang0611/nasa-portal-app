@@ -15,10 +15,15 @@ import { DateTime } from 'luxon';
 import DatePicker from '../datePicker/DatePicker';
 import API from '../../api';
 import { options_rover, options_cameras, options_date } from '../../data';
-import { useSearchFormStyle } from '../../styles';
+import { useSearchFormStyles } from '../../styles';
 
-const SearchResultForm = ({ handleResults, page, handlePage }) => {
-  const classes = useSearchFormStyle();
+const SearchResultForm = ({
+  handleResults,
+  page,
+  handlePage,
+  handleSearch,
+}) => {
+  const classes = useSearchFormStyles();
 
   const [loading, setLoading] = React.useState(true);
 
@@ -37,7 +42,6 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
   const [earthDateVisible, setEarthDateVisible] = React.useState(true);
   const [solDateVisible, setSolDateVisible] = React.useState(false);
   const [dateType, setDateType] = React.useState('earth_date');
-  const [isAllSelected, setAllSelected] = React.useState(false);
 
   React.useEffect(() => {
     if (filters.datetype === 'earth') {
@@ -84,14 +88,6 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
     });
   };
 
-  React.useEffect(() => {
-    if (dateType === 'sol') {
-      filters.sol.length > 0 ? setAllSelected(true) : setAllSelected(false);
-    } else {
-      filters.date !== null ? setAllSelected(true) : setAllSelected(false);
-    }
-  });
-
   const handleSubmit = (e) => {
     e.preventDefault();
     handlePage();
@@ -111,7 +107,8 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
         if (filters.cameras === 'all') {
           query = `${filters.rovers}/photos?${dateType}=${chosen_date}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
         } else {
-          query = `${filters.rovers}/photos?${dateType}=${chosen_date}&camera=${filters.cameras}&page=${page}&${process.env.REACT_APP_NASA_API_KEY}`;
+          console.log('camera');
+          query = `${filters.rovers}/photos?${dateType}=${chosen_date}&camera=${filters.cameras}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
         }
 
         let res = await API.get(query);
@@ -244,8 +241,7 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
             type='submit'
             fullWidth
             variant='contained'
-            className={isAllSelected ? classes.searchBtn : classes.inactiveBtn}
-            disabled={!isAllSelected}
+            className={classes.searchBtn}
           >
             Search
           </Button>{' '}
