@@ -22,7 +22,7 @@ export default function DatePicker(props) {
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    props.handleDate(props.name, date);
+    props.handleDate(date);
   };
 
   return (

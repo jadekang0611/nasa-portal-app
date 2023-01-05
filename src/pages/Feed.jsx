@@ -11,20 +11,17 @@ const FeedPost = React.lazy(() => import('../components/feed/FeedPost'));
 const FeedPage = () => {
   const classes = useFeedPageStyles();
   const [photos, setPhotos] = React.useState([]);
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
   const loader = React.useRef(null);
   const [filtered, setFiltered] = React.useState(false);
-  const [filters, setFilters] = React.useState({
-    rovers: '',
-    sol: '',
-    datetype: '',
-    cameras: '',
-    date: '',
-  });
 
   function handleSearch() {
     setFiltered(true);
+  }
+
+  function handleLoading(value) {
+    setLoading(value);
   }
 
   const handleObserver = React.useCallback((entries) => {
@@ -33,41 +30,6 @@ const FeedPage = () => {
       setPage((prev) => prev + 1);
     }
   }, []);
-
-  const fetchMarsPhotos = async () => {
-    let res;
-    let entireData;
-    setLoading(true);
-    if (filtered) {
-      if (filters.cameras === 'all') {
-        res = await API.get(
-          `${filters.rovers}/photos?${filters.datetype}=${filters.date}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`
-        );
-        if (res.data.photos.length > 0) {
-          entireData = new Set([...photos, ...res.data.photos]);
-          setPhotos([...entireData]);
-        }
-      } else {
-        res = await API.get(
-          `${filters.rovers}/photos?${filters.datetype}=${filters.date}&camera=${filters.cameras}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`
-        );
-        if (res.data.photos.length > 0) {
-          entireData = new Set([...photos, ...res.data.photos]);
-          setPhotos([...entireData]);
-        }
-      }
-    } else {
-      res = await API.get(
-        `curiosity/latest_photos?page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`
-      );
-      if (res.data.latest_photos.length > 0) {
-        entireData = new Set([...photos, ...res.data.latest_photos]);
-        setPhotos([...entireData]);
-      }
-      setLoading(false);
-    }
-    setLoading(false);
-  };
 
   React.useEffect(() => {
     const option = {
@@ -79,32 +41,23 @@ const FeedPage = () => {
     if (loader.current) observer.observe(loader.current);
   }, [handleObserver]);
 
-  React.useEffect(() => {
-    fetchMarsPhotos();
-  }, [page]);
-
-  function handleResults(data, rovers, datetype, date, cameras, filtered) {
-    setPhotos(data);
-    setFilters({
-      rovers,
-      datetype,
-      cameras,
-      date,
-    });
-    setFiltered(filtered);
+  function loadPhotos(photo_list) {
+    setPhotos([...photo_list]);
   }
 
   function handlePage() {
-    setPage(1);
+    setPage(0);
   }
 
   return (
     <Layout title='Feed'>
       <SearchForm
-        handleResults={handleResults}
         page={page}
         handlePage={handlePage}
         handleSearch={handleSearch}
+        loadPhotos={loadPhotos}
+        photos={photos}
+        handleLoading={handleLoading}
       />
       <section>
         <main className={classes.mainWrapper}>

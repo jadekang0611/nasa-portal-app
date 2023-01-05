@@ -18,15 +18,16 @@ import { options_rover, options_cameras, options_date } from '../../data';
 import { useSearchFormStyles } from '../../styles';
 
 const SearchResultForm = ({
-  handleResults,
   page,
   handlePage,
-  handleSearch,
+  loadPhotos,
+  photos,
+  handleLoading,
 }) => {
   const classes = useSearchFormStyles();
 
-  const [loading, setLoading] = React.useState(true);
-
+  //const [loading, setLoading] = React.useState(true);
+  const [submitClicked, setSubmitClicked] = React.useState(false);
   const [filters, setFilters] = React.useState({
     rovers: 'curiosity',
     sol: '',
@@ -42,6 +43,12 @@ const SearchResultForm = ({
   const [earthDateVisible, setEarthDateVisible] = React.useState(true);
   const [solDateVisible, setSolDateVisible] = React.useState(false);
   const [dateType, setDateType] = React.useState('earth_date');
+
+  //Brought over from Feed.jsx
+  const [filtered, setFiltered] = React.useState(false);
+  React.useEffect(() => {
+    fetchMarsPhotos();
+  }, [page]);
 
   React.useEffect(() => {
     if (filters.datetype === 'earth') {
@@ -67,6 +74,7 @@ const SearchResultForm = ({
   };
 
   const resetForm = () => {
+    setFiltered(false);
     setFilters({
       rovers: 'curiosity',
       sol: '',
@@ -78,54 +86,73 @@ const SearchResultForm = ({
       startDate: '',
     });
     handlePage();
+    loadPhotos([]);
+    fetchMarsPhotos();
   };
 
-  const handleDate = (name, date) => {
+  function handleDate(date) {
     let formatted_date = DateTime.fromJSDate(date).toFormat('yyyy-MM-dd');
     setFilters({
       ...filters,
       date: formatted_date,
     });
-  };
+  }
 
-  const handleSubmit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
+    setFiltered(true);
+    setSubmitClicked(true);
+    loadPhotos([]);
     handlePage();
+    fetchMarsPhotos();
+    setSubmitClicked(false);
+  }
 
-    (async () => {
-      try {
-        setLoading(true);
-
-        //build query string
-        let chosen_date = '';
-        if (filters.datetype === 'earth') {
-          chosen_date = filters.date;
-        } else if (filters.datetype === 'sol') {
-          chosen_date = filters.sol;
-        }
-        let query;
-        if (filters.cameras === 'all') {
-          query = `${filters.rovers}/photos?${dateType}=${chosen_date}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
-        } else {
-          query = `${filters.rovers}/photos?${dateType}=${chosen_date}&camera=${filters.cameras}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
-        }
-
-        let res = await API.get(query);
-        setLoading(false);
-
-        handleResults(
-          res.data.photos,
-          filters.rovers,
-          dateType,
-          chosen_date,
-          filters.cameras,
-          true
-        );
-      } catch (e) {
-        setLoading(false);
-        console.log(`Having an issue with getting data from NASA - ${e}`);
+  const fetchMarsPhotos = async () => {
+    handleLoading(true);
+    try {
+      let res;
+      let entireData;
+      let chosen_date = '';
+      if (filters.datetype === 'earth') {
+        chosen_date = filters.date;
+      } else if (filters.datetype === 'sol') {
+        chosen_date = filters.sol;
       }
-    })();
+      if (filtered) {
+        if (filters.cameras === 'all') {
+          res = await API.get(
+            `${filters.rovers}/photos?${dateType}=${chosen_date}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`
+          );
+          if (res.data.photos.length > 0) {
+            entireData = new Set([...photos, ...res.data.photos]);
+            loadPhotos(entireData);
+          }
+        } else {
+          res = await API.get(
+            `${filters.rovers}/photos?${dateType}=${chosen_date}&camera=${filters.cameras}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`
+          );
+          if (res.data.photos.length > 0) {
+            entireData = new Set([...photos, ...res.data.photos]);
+            loadPhotos(entireData);
+          }
+        }
+        handleLoading(false);
+      } else {
+        res = await API.get(
+          `curiosity/latest_photos?page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`
+        );
+        if (res.data.latest_photos.length > 0) {
+          entireData = new Set([...photos, ...res.data.latest_photos]);
+          loadPhotos(entireData);
+        }
+        handleLoading(false);
+      }
+      handleLoading(false);
+    } catch (e) {
+      handleLoading(false);
+      console.log(`Having an issue with getting data from NASA - ${e}`);
+    }
   };
 
   const menuProps = {
@@ -184,7 +211,12 @@ const SearchResultForm = ({
         <Grid item xs={12} sm={6}>
           {earthDateVisible ? (
             <>
-              <InputLabel className={classes.label}>Earth Date</InputLabel>
+              <InputLabel
+                className={classes.label}
+                style={{ fontSize: '13px' }}
+              >
+                Earth Date
+              </InputLabel>
 
               <DatePicker name='startDate' handleDate={handleDate} />
             </>
