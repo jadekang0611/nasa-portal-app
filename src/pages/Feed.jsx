@@ -30,7 +30,6 @@ const FeedPage = () => {
   const handleObserver = React.useCallback((entries) => {
     const target = entries[0];
     if (target.isIntersecting) {
-      console.log(`Target is intersect`);
       setPage((prev) => prev + 1);
     }
   }, []);
@@ -39,7 +38,6 @@ const FeedPage = () => {
     let res;
     let entireData;
     setLoading(true);
-    console.log(filtered);
     if (filtered) {
       if (filters.cameras === 'all') {
         res = await API.get(
@@ -63,7 +61,6 @@ const FeedPage = () => {
         `curiosity/latest_photos?page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`
       );
       if (res.data.latest_photos.length > 0) {
-        console.log('fetching latest');
         entireData = new Set([...photos, ...res.data.latest_photos]);
         setPhotos([...entireData]);
       }
@@ -84,13 +81,10 @@ const FeedPage = () => {
 
   React.useEffect(() => {
     fetchMarsPhotos();
-    console.log(`Page: ${page}`);
   }, [page]);
 
   function handleResults(data, rovers, datetype, date, cameras, filtered) {
     setPhotos(data);
-    console.log('handle results');
-    console.log(`filtered: ${filtered}`);
     setFilters({
       rovers,
       datetype,

@@ -107,7 +107,6 @@ const SearchResultForm = ({
         if (filters.cameras === 'all') {
           query = `${filters.rovers}/photos?${dateType}=${chosen_date}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
         } else {
-          console.log('camera');
           query = `${filters.rovers}/photos?${dateType}=${chosen_date}&camera=${filters.cameras}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
         }
 
