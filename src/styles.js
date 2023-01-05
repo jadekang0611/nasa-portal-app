@@ -133,7 +133,7 @@ export const useSearchFormStyles = makeStyles((theme) => ({
   },
   resetBtn: {
     backgroundColor: 'transparent',
-    border: '#E50914 1px solid',
+    border: '#E50914 1px solid !important',
     color: '#000',
     transition: 'background 0.3s, color 0.3s',
     '&:hover': {

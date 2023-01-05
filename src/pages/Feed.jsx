@@ -38,6 +38,7 @@ const FeedPage = () => {
   const fetchMarsPhotos = async () => {
     let res;
     let entireData;
+    setLoading(true);
     console.log(filtered);
     if (filtered) {
       if (filters.cameras === 'all') {
@@ -122,9 +123,9 @@ const FeedPage = () => {
           ) : (
             <FeedPhotoSection photos={photos} />
           )}
+          {loading && <LoadingLargeIcon />}
+          <div ref={loader} />
         </main>
-        {loading && <LoadingLargeIcon />}
-        <div ref={loader} />
       </section>
     </Layout>
   );
