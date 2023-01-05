@@ -131,8 +131,8 @@ export const useSearchFormStyle = makeStyles((theme) => ({
     maxWidth: '200px',
     marginRight: '10px !important',
   },
-  inActiveBtn: {
-    backgroundColor: '#E0E0E0',
+  inactiveBtn: {
+    backgroundColor: '#E0E0E0 !important',
     color: 'white !important',
     maxWidth: '200px',
     marginRight: '10px !important',
@@ -142,7 +142,7 @@ export const useSearchFormStyle = makeStyles((theme) => ({
     color: '#000',
     transition: 'background 0.3s, color 0.3s',
     '&:hover': {
-      backgroundColor: '#f40612',
+      backgroundColor: '#E50914',
       color: 'white',
     },
     maxWidth: '200px',

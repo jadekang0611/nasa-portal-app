@@ -59,12 +59,6 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
       ...filters,
       [e.target.name]: e.target.value,
     });
-
-    if (e.target.value === 'earth') {
-      console.log('earth type selected');
-    } else if (e.target.value === 'sol') {
-      console.log('sol type selected');
-    }
   };
 
   const resetForm = () => {
@@ -82,10 +76,7 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
   };
 
   const handleDate = (name, date) => {
-    console.log(name);
-    console.log(date);
     let formatted_date = DateTime.fromJSDate(date).toFormat('yyyy-MM-dd');
-    console.log(`dt: ${formatted_date}`);
     setFilters({
       ...filters,
       date: formatted_date,
@@ -94,8 +85,6 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
 
   React.useEffect(() => {
     if (dateType === 'sol') {
-      console.log(dateType);
-      console.log(`sol length: ${filters.sol.length}`);
       filters.sol.length > 0 ? setAllSelected(true) : setAllSelected(false);
     } else {
       filters.date !== null ? setAllSelected(true) : setAllSelected(false);
@@ -117,9 +106,6 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
         } else if (filters.datetype === 'sol') {
           chosen_date = filters.sol;
         }
-
-        console.log(`chosen date: ${chosen_date}`);
-        console.log(filters.cameras);
         let query;
         if (filters.cameras === 'all') {
           query = `${filters.rovers}/photos?${dateType}=${chosen_date}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
@@ -127,11 +113,9 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
           query = `${filters.rovers}/photos?${dateType}=${chosen_date}&camera=${filters.cameras}&page=${page}&${process.env.REACT_APP_NASA_API_KEY}`;
         }
 
-        console.log(query);
-
         let res = await API.get(query);
         setLoading(false);
-        console.log(res.data.photos);
+
         handleResults(
           res.data.photos,
           filters.rovers,
@@ -142,7 +126,7 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
         );
       } catch (e) {
         setLoading(false);
-        console.log(e);
+        console.log(`Having an issue with getting data from NASA - ${e}`);
       }
     })();
   };
@@ -259,7 +243,7 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
             type='submit'
             fullWidth
             variant='contained'
-            className={isAllSelected ? classes.searchBtn : classes.inActiveBtn}
+            className={isAllSelected ? classes.searchBtn : classes.inactiveBtn}
             disabled={!isAllSelected}
           >
             Search

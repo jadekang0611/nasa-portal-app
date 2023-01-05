@@ -4,11 +4,9 @@ import {
   Card,
   CardContent,
   Typography,
-  Chip,
   CardActionArea,
   CardMedia,
 } from '@material-ui/core';
-import { defaultPost } from '../../data';
 
 const useStyles = makeStyles({
   root: {

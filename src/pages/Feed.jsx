@@ -41,7 +41,7 @@ const FeedPage = () => {
     if (filtered) {
       if (filters.cameras === 'all') {
         res = await API.get(
-          `${filters.rovers}/photos?${filters.datetype}=${filters.date}&page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`
+          `${filters.rovers}/photos?${filters.datetype}=${filters.date}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`
         );
         if (res.data.photos.length > 0) {
           entireData = new Set([...photos, ...res.data.photos]);
@@ -49,7 +49,7 @@ const FeedPage = () => {
         }
       } else {
         res = await API.get(
-          `${filters.rovers}/photos?${filters.datetype}=${filters.date}&camera=${filters.cameras}&page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`
+          `${filters.rovers}/photos?${filters.datetype}=${filters.date}&camera=${filters.cameras}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`
         );
         if (res.data.photos.length > 0) {
           entireData = new Set([...photos, ...res.data.photos]);
