@@ -8,12 +8,14 @@ import FeedPost from '../components/feed/FeedPost';
 import { Grid, Typography } from '@material-ui/core';
 import API from '../api';
 import { LoadingLargeIcon } from '../icons';
+import { useFeedPageStyle } from '../styles';
 
 /* Fetch the latest photos as soon as a user visits the main Feed page */
 
 const FeedPage = () => {
+  const classes = useFeedPageStyle();
   const [photos, setPhotos] = React.useState([]);
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
   const loader = React.useRef(null);
   const [filtered, setFiltered] = React.useState(false);
@@ -41,21 +43,30 @@ const FeedPage = () => {
         res = await API.get(
           `${filters.rovers}/photos?${filters.datetype}=${filters.date}&page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`
         );
-        entireData = new Set([...photos, ...res.data.photos]);
+        if (res.data.photos.length > 0) {
+          entireData = new Set([...photos, ...res.data.photos]);
+          setPhotos([...entireData]);
+        }
       } else {
         res = await API.get(
           `${filters.rovers}/photos?${filters.datetype}=${filters.date}&camera=${filters.cameras}&page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`
         );
-        entireData = new Set([...photos, ...res.data.photos]);
+        if (res.data.photos.length > 0) {
+          entireData = new Set([...photos, ...res.data.photos]);
+          setPhotos([...entireData]);
+        }
       }
     } else {
       res = await API.get(
-        `curiosity/latest_photos?page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`
+        `curiosity/latest_photos?page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`
       );
-      entireData = new Set([...photos, ...res.data.latest_photos]);
+      if (res.data.latest_photos.length > 0) {
+        entireData = new Set([...photos, ...res.data.latest_photos]);
+        setPhotos([...entireData]);
+      }
+      setLoading(false);
     }
 
-    setPhotos([...entireData]);
     setLoading(false);
   };
 
@@ -74,7 +85,6 @@ const FeedPage = () => {
   }, [page]);
 
   function handleResults(data, rovers, datetype, date, cameras, filtered) {
-    console.log(data);
     setPhotos(data);
     setFilters({
       rovers,
@@ -85,12 +95,20 @@ const FeedPage = () => {
     setFiltered(filtered);
   }
 
+  function handlePage() {
+    setPage(0);
+  }
+
   return (
     <Layout title='Feed'>
-      <SearchForm handleResults={handleResults} page={page} />
+      <SearchForm
+        handleResults={handleResults}
+        page={page}
+        handlePage={handlePage}
+      />
       <section>
-        <main>
-          {photos.length === 0 ? (
+        <main className={classes.mainWrapper}>
+          {!loading && photos.length === 0 ? (
             <>
               <Typography component='h3' variant='h6'>
                 Your search did not return any results.
@@ -99,9 +117,9 @@ const FeedPage = () => {
           ) : (
             <FeedPhotoSection photos={photos} />
           )}
-          {loading && <LoadingLargeIcon />}
-          <div ref={loader} />
         </main>
+        {loading && <LoadingLargeIcon />}
+        <div ref={loader} />
       </section>
     </Layout>
   );

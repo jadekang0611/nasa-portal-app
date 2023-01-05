@@ -42,7 +42,7 @@ export const useNavbarStyle = makeStyles(() => ({
 }));
 
 /* Layout component: /components/shared/Layout.jsx */
-export const useLayoutStyles = makeStyles(() => ({
+export const useLayoutStyles = makeStyles((theme) => ({
   section: {
     display: 'flex',
     flexDirection: 'column',
@@ -58,6 +58,9 @@ export const useLayoutStyles = makeStyles(() => ({
     position: 'relative',
     padding: 0,
     order: 4,
+    [theme.breakpoints.down('sm')]: {
+      padding: '10px !important',
+    },
   },
   childrenWrapper: {
     paddingTop: 30,
@@ -68,56 +71,6 @@ export const useLayoutStyles = makeStyles(() => ({
   },
   children: {
     width: '100%',
-  },
-}));
-
-export const useSearchFormStyle = makeStyles((theme) => ({
-  sectionItem: {
-    display: 'grid',
-    gridAutoFlow: 'column',
-    gridGap: 30,
-    placeItems: 'start end',
-    marginBottom: 16,
-    gridTemplateColumns: 'minmax(auto, 150px) minmax(auto, 340px)',
-  },
-  justifySelfStart: {
-    justifySelf: 'start',
-  },
-  form: {
-    display: 'grid',
-  },
-  paper: {
-    marginTop: theme.spacing(6),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(3),
-  },
-  search: {
-    //margin: theme.spacing(3, 0, 2),
-    backgroundColor: '#E50914',
-    color: 'white',
-    '&:hover': {
-      backgroundColor: '#f40612',
-    },
-    maxWidth: '200px',
-  },
-  results: {
-    marginTop: theme.spacing(6),
-  },
-  centered: {
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    /* bring your own prefixes */
-    transform: 'translate(-50%, -50%)',
   },
 }));
 
@@ -144,22 +97,70 @@ export const useSearchStyle = makeStyles((theme) => ({
   },
 }));
 
-const sectionItem = {
-  display: 'grid',
-  gridAutoFlow: 'column',
-  gridGap: 30,
-  placeItems: 'start end',
-  marginBottom: 16,
-  gridTemplateColumns: 'minmax(auto, 150px) minmax(auto, 340px)',
-};
-const typography = {
-  fontWeight: '600 !important',
-};
-const justifySelfStart = {
-  justifySelf: 'start',
-};
-const form = {
-  display: 'grid',
-};
+export const useSearchFormStyle = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(6),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  form: {
+    width: '100%',
+    marginTop: theme.spacing(2),
+  },
+  label: {
+    '&.Mui-focused': {
+      color: '#E50914',
+    },
+  },
+  btnWrapper: {
+    padding: '8px',
+  },
+  textField: {
+    '&.MuiFocused': {
+      color: '#E50914',
+    },
+  },
+  searchBtn: {
+    backgroundColor: '#E50914',
+    color: 'white !important',
+    transition: 'background 0.3s, color 0.3s',
+    '&:hover': {
+      backgroundColor: '#f40612 !important',
+    },
+    maxWidth: '200px',
+    marginRight: '10px !important',
+  },
+  inActiveBtn: {
+    backgroundColor: '#E0E0E0',
+    color: 'white !important',
+    maxWidth: '200px',
+    marginRight: '10px !important',
+  },
+  resetBtn: {
+    backgroundColor: 'transparent',
+    color: '#000',
+    transition: 'background 0.3s, color 0.3s',
+    '&:hover': {
+      backgroundColor: '#f40612',
+      color: 'white',
+    },
+    maxWidth: '200px',
+  },
+  results: {
+    marginTop: theme.spacing(6),
+  },
+  centered: {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    /* bring your own prefixes */
+    transform: 'translate(-50%, -50%)',
+  },
+}));
 
-export const useFeedStyle = makeStyles((theme) => ({}));
+export const useFeedPageStyle = makeStyles(() => ({
+  mainWrapper: {
+    paddingTop: '20px',
+  },
+}));

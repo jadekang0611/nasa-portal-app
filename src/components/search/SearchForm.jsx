@@ -7,64 +7,19 @@ import {
   MenuItem,
   Select,
   Grid,
-  CircularProgress,
+  FormControl,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { DateTime } from 'luxon';
 
 // Custom Components
 import DatePicker from '../datePicker/DatePicker';
 import API from '../../api';
+import { useSearchFormStyle } from '../../styles';
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(6),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(3),
-  },
-  search: {
-    //margin: theme.spacing(3, 0, 2),
-    backgroundColor: '#E50914',
-    color: 'white',
-    '&:hover': {
-      backgroundColor: '#f40612',
-    },
-    maxWidth: '200px',
-    marginRight: '10px',
-  },
-  reset: {
-    backgroundColor: 'transparent',
-    color: '#000',
-    '&:hover': {
-      backgroundColor: '#f40612',
-    },
-    maxWidth: '200px',
-  },
-  results: {
-    marginTop: theme.spacing(6),
-  },
-  centered: {
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    /* bring your own prefixes */
-    transform: 'translate(-50%, -50%)',
-  },
-}));
+const SearchResultForm = ({ handleResults, page, handlePage }) => {
+  const classes = useSearchFormStyle();
 
-export default function SearchResultForm({ handleResults, page }) {
-  const classes = useStyles();
-
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
 
   const [filters, setFilters] = React.useState({
     rovers: 'curiosity',
@@ -73,6 +28,7 @@ export default function SearchResultForm({ handleResults, page }) {
     cameras: 'all',
     date: DateTime.now().toFormat('yyyy-MM-dd'),
   });
+
   const [dates, setDates] = React.useState({
     startDate: '',
   });
@@ -80,7 +36,7 @@ export default function SearchResultForm({ handleResults, page }) {
   const [earthDateVisible, setEarthDateVisible] = React.useState(true);
   const [solDateVisible, setSolDateVisible] = React.useState(false);
   const [dateType, setDateType] = React.useState('earth_date');
-  //const [page, setPage] = React.useState(1);
+  const [isAllSelected, setAllSelected] = React.useState(false);
 
   React.useEffect(() => {
     if (filters.datetype === 'earth') {
@@ -122,6 +78,7 @@ export default function SearchResultForm({ handleResults, page }) {
     setDates({
       startDate: '',
     });
+    handlePage();
   };
 
   const handleDate = (name, date) => {
@@ -135,18 +92,20 @@ export default function SearchResultForm({ handleResults, page }) {
     });
   };
 
-  const fetchMarsPhotos = async () => {
-    // setLoading(true);
-    // let res = await API.get(
-    //   `curiosity/latest_photos?page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`
-    // );
-    // let entireData = new Set([...photos, ...res.data.latest_photos]);
-    // setPhotos([...entireData]);
-    // setLoading(false);
-  };
+  React.useEffect(() => {
+    if (dateType === 'sol') {
+      console.log(dateType);
+      console.log(`sol length: ${filters.sol.length}`);
+      filters.sol.length > 0 ? setAllSelected(true) : setAllSelected(false);
+    } else {
+      filters.date !== null ? setAllSelected(true) : setAllSelected(false);
+    }
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    handlePage();
+
     (async () => {
       try {
         setLoading(true);
@@ -163,9 +122,9 @@ export default function SearchResultForm({ handleResults, page }) {
         console.log(filters.cameras);
         let query;
         if (filters.cameras === 'all') {
-          query = `${filters.rovers}/photos?${dateType}=${chosen_date}&page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`;
+          query = `${filters.rovers}/photos?${dateType}=${chosen_date}&page=${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
         } else {
-          query = `${filters.rovers}/photos?${dateType}=${chosen_date}&camera=${filters.cameras}&page=${page}&api_key=DKuQ37oCnwIVKPnbOuI7Kv15ySbab1UqWjx9lmxY`;
+          query = `${filters.rovers}/photos?${dateType}=${chosen_date}&camera=${filters.cameras}&page=${page}&${process.env.REACT_APP_NASA_API_KEY}`;
         }
 
         console.log(query);
@@ -188,94 +147,120 @@ export default function SearchResultForm({ handleResults, page }) {
     })();
   };
 
-  // if (page <= ACTUAL_PAGES) call the api
+  const menuProps = {
+    getContentAnchorEl: null,
+    anchorOrigin: {
+      vertical: 'bottom',
+      horizontal: 'left',
+    },
+  };
 
   return (
     <form className={classes.form} onSubmit={handleSubmit} noValidate>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
-          <InputLabel>Rovers</InputLabel>
-          <Select
-            fullWidth
-            labelId='rovers'
-            id='rovers'
-            name='rovers'
-            value={filters.rovers ? filters.rovers : ''}
-            label='Rovers'
-            onChange={handleChange}
-          >
-            <MenuItem value={'curiosity'}>Curiosity</MenuItem>
-            <MenuItem value={'opportunity'}>Opportunity</MenuItem>
-            <MenuItem value={'spirit'}>Spirit</MenuItem>
-          </Select>
+          <FormControl variant='standard' fullWidth>
+            <InputLabel className={classes.label}>Rovers</InputLabel>
+            <Select
+              fullWidth
+              labelId='rovers'
+              id='rovers'
+              name='rovers'
+              value={filters.rovers ? filters.rovers : ''}
+              label='Rovers'
+              onChange={handleChange}
+              MenuProps={menuProps}
+            >
+              <MenuItem value={'curiosity'}>Curiosity</MenuItem>
+              <MenuItem value={'opportunity'}>Opportunity</MenuItem>
+              <MenuItem value={'spirit'}>Spirit</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <InputLabel>Date Type</InputLabel>
-          <Select
-            fullWidth
-            labelId='datetype'
-            id='datetype'
-            name='datetype'
-            value={filters.datetype ? filters.datetype : ''}
-            label='datetype'
-            onChange={handleChange}
-          >
-            <MenuItem value={'earth'}>Earth Day</MenuItem>
-            <MenuItem value={'sol'}>Sol</MenuItem>
-          </Select>
+          <FormControl fullWidth>
+            <InputLabel className={classes.label}>Date Type</InputLabel>
+            <Select
+              fullWidth
+              labelId='datetype'
+              id='datetype'
+              name='datetype'
+              value={filters.datetype ? filters.datetype : ''}
+              label='datetype'
+              onChange={handleChange}
+              MenuProps={menuProps}
+            >
+              <MenuItem value={'earth'}>Earth Day</MenuItem>
+              <MenuItem value={'sol'}>Sol</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
           {earthDateVisible ? (
             <>
-              <InputLabel>Available Start Date</InputLabel>
+              <InputLabel className={classes.label}>Earth Date</InputLabel>
 
               <DatePicker name='startDate' handleDate={handleDate} />
             </>
           ) : (
-            <TextField
-              type='number'
-              variant='standard'
-              required
-              fullWidth
-              autoComplete='Sol'
-              id='sol'
-              label='Sol'
-              name='sol'
-              onChange={handleChange}
-              value={filters.sol ? filters.sol : ''}
-            />
+            <>
+              <TextField
+                className='solField'
+                type='number'
+                variant='standard'
+                required
+                fullWidth
+                autoComplete='Sol'
+                id='sol'
+                InputLabelProps={{
+                  className: classes.textField,
+                }}
+                label='Sol Date'
+                name='sol'
+                onChange={handleChange}
+                value={filters.sol ? filters.sol : ''}
+              />
+            </>
           )}
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          <InputLabel>Cameras</InputLabel>
-          <Select
-            fullWidth
-            labelId='cameras'
-            id='cameras'
-            name='cameras'
-            value={filters.cameras ? filters.cameras : ''}
-            label='Cameras'
-            onChange={handleChange}
-          >
-            <MenuItem value={'all'}>All Cameras</MenuItem>
-            <MenuItem value={'fhaz'}>FHAZ</MenuItem>
-            <MenuItem value={'rhaz'}>RHAZ</MenuItem>
-            <MenuItem value={'mast'}>MAST</MenuItem>
-            <MenuItem value={'chemcam'}>CHEMCAM</MenuItem>
-            <MenuItem value={'mahli'}>MAHLI </MenuItem>
-            <MenuItem value={'mardi'}>MARDI </MenuItem>
-            <MenuItem value={'navcam'}>NAVCAM </MenuItem>
-            <MenuItem value={'pancam'}>PANCAM</MenuItem>
-            <MenuItem value={'minites'}>MINITES</MenuItem>
-          </Select>
+          <FormControl fullWidth>
+            <InputLabel className={classes.label}>Cameras</InputLabel>
+            <Select
+              fullWidth
+              labelId='cameras'
+              id='cameras'
+              name='cameras'
+              value={filters.cameras ? filters.cameras : ''}
+              label='Cameras'
+              onChange={handleChange}
+              MenuProps={menuProps}
+            >
+              <MenuItem value={'all'}>All Cameras</MenuItem>
+              <MenuItem value={'fhaz'}>FHAZ</MenuItem>
+              <MenuItem value={'rhaz'}>RHAZ</MenuItem>
+              <MenuItem value={'mast'}>MAST</MenuItem>
+              <MenuItem value={'chemcam'}>CHEMCAM</MenuItem>
+              <MenuItem value={'mahli'}>MAHLI </MenuItem>
+              <MenuItem value={'mardi'}>MARDI </MenuItem>
+              <MenuItem value={'navcam'}>NAVCAM </MenuItem>
+              <MenuItem value={'pancam'}>PANCAM</MenuItem>
+              <MenuItem value={'minites'}>MINITES</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
-        <Grid container justifyContent='flex-end'>
+        <Grid
+          container
+          justifyContent='flex-end'
+          className={classes.btnWrapper}
+        >
           <Button
             type='submit'
             fullWidth
             variant='contained'
-            className={classes.search}
+            className={isAllSelected ? classes.searchBtn : classes.inActiveBtn}
+            disabled={!isAllSelected}
           >
             Search
           </Button>{' '}
@@ -283,15 +268,14 @@ export default function SearchResultForm({ handleResults, page }) {
             onClick={resetForm}
             fullWidth
             variant='outlined'
-            className={classes.reset}
+            className={classes.resetBtn}
           >
             Reset
           </Button>
         </Grid>
-        <Grid item xs={12}>
-          {loading && <CircularProgress />}
-        </Grid>
       </Grid>
     </form>
   );
-}
+};
+
+export default SearchResultForm;

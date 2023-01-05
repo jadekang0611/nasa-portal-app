@@ -35,7 +35,7 @@
 [Components]:
 
 - FeedPost
-- FeedPostSkeleton (For UI/UX purpose for slow loading)
+- FeedPostSkeleton (If time allowed -- For UI/UX purpose for slow loading)
 
 <!-- If time allowed -->
 
@@ -54,14 +54,16 @@
 
 • \* (not found page)
 
+[Components]:
+
+- Search
+- SearchForm
+
 ## Shared Components
 
 - Navbar
-- PinCard
-- LoadingScreen
 - Layout
 - SEO
-- Search
 
 ### Built With
 

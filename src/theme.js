@@ -13,7 +13,7 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: '#3897f0',
+      main: '#E50914',
     },
     secondary: {
       main: '#385185',
@@ -54,7 +54,7 @@ const theme = createTheme({
     MuiButton: {
       root: {
         '&.MuiButton-containedPrimary:hover': {
-          backgroundColor: '#3897f0',
+          backgroundColor: '#E50914',
           boxShadow: 'none',
         },
         textTransform: 'unset',
