@@ -35,28 +35,11 @@
 [Components]:
 
 - FeedPost
-- FeedPostSkeleton (If time allowed -- For UI/UX purpose for slow loading)
-
-<!-- If time allowed -->
-
-• /pins/:username
+  • \* (not found page)
 
 [Components]:
 
-- Pins (A user can pin a.k.a save their favourite NASA photos and view in this page)
-- Pin
-- Pin Skeleton
-
-• /accounts/emailsignup (signup page)
-• /accounts/login (login page)
-
-<!-- If time allowed -->
-
-• \* (not found page)
-
-[Components]:
-
-- Search
+- datePicker
 - SearchForm
 
 ## Shared Components

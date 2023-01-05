@@ -174,3 +174,10 @@ export const useFeedPostStyle = makeStyles(() => ({
     fontSize: 14,
   },
 }));
+
+/* Not Found page: /pages/not-found.js */
+export const useNotFoundPageStyles = makeStyles({
+  link: {
+    textDecoration: 'none',
+  },
+});
