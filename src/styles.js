@@ -164,3 +164,13 @@ export const useFeedPageStyle = makeStyles(() => ({
     paddingTop: '20px',
   },
 }));
+
+export const useFeedPostStyle = makeStyles(() => ({
+  root: {
+    minWidth: 275,
+    height: '100%',
+  },
+  title: {
+    fontSize: 14,
+  },
+}));

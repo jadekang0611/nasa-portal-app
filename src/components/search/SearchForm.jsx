@@ -14,6 +14,7 @@ import { DateTime } from 'luxon';
 // Custom Components
 import DatePicker from '../datePicker/DatePicker';
 import API from '../../api';
+import { options_rover, options_cameras, options_date } from '../../data';
 import { useSearchFormStyle } from '../../styles';
 
 const SearchResultForm = ({ handleResults, page, handlePage }) => {
@@ -155,9 +156,11 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
               onChange={handleChange}
               MenuProps={menuProps}
             >
-              <MenuItem value={'curiosity'}>Curiosity</MenuItem>
-              <MenuItem value={'opportunity'}>Opportunity</MenuItem>
-              <MenuItem value={'spirit'}>Spirit</MenuItem>
+              {options_rover.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Grid>
@@ -174,8 +177,11 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
               onChange={handleChange}
               MenuProps={menuProps}
             >
-              <MenuItem value={'earth'}>Earth Day</MenuItem>
-              <MenuItem value={'sol'}>Sol</MenuItem>
+              {options_date.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Grid>
@@ -221,16 +227,11 @@ const SearchResultForm = ({ handleResults, page, handlePage }) => {
               onChange={handleChange}
               MenuProps={menuProps}
             >
-              <MenuItem value={'all'}>All Cameras</MenuItem>
-              <MenuItem value={'fhaz'}>FHAZ</MenuItem>
-              <MenuItem value={'rhaz'}>RHAZ</MenuItem>
-              <MenuItem value={'mast'}>MAST</MenuItem>
-              <MenuItem value={'chemcam'}>CHEMCAM</MenuItem>
-              <MenuItem value={'mahli'}>MAHLI </MenuItem>
-              <MenuItem value={'mardi'}>MARDI </MenuItem>
-              <MenuItem value={'navcam'}>NAVCAM </MenuItem>
-              <MenuItem value={'pancam'}>PANCAM</MenuItem>
-              <MenuItem value={'minites'}>MINITES</MenuItem>
+              {options_cameras.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Grid>
